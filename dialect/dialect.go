@@ -2,7 +2,7 @@ package dialect
 
 import "reflect"
 
-var dialectsMap map[string]Dialect
+var dialectsMap = map[string]Dialect{}
 
 type Dialect interface {
 	DataTypeOf(typ reflect.Value) string
