@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type generator func(values ...any) (string []any)
+type generator func(values ...any) (string, []any)
 
 var generators map[Type]generator
 

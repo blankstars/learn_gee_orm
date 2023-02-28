@@ -1,5 +1,12 @@
 package clause
 
+import "strings"
+
+type Clause struct {
+	sql     map[Type]string
+	sqlVals map[Type][]any
+}
+
 type Type int
 
 const (
@@ -10,3 +17,25 @@ const (
 	WHERE
 	ORDERBY
 )
+
+func (c *Clause) Set(name Type, vars ...any) {
+	if c.sql == nil {
+		c.sql = make(map[Type]string)
+		c.sqlVals = make(map[Type][]any)
+	}
+	sql, vals := generators[name](vars...)
+	c.sql[name] = sql
+	c.sqlVals[name] = vals
+}
+
+func (c *Clause) Build(orders ...Type) (string, []any) {
+	var sqls []string
+	var vars []any
+	for _, order := range orders {
+		if sql, ok := c.sql[order]; ok {
+			sqls = append(sqls, sql)
+			vars = append(vars, c.sqlVals[order]...)
+		}
+	}
+	return strings.Join(sqls, " "), vars
+}
