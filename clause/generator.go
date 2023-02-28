@@ -34,21 +34,43 @@ func _insert(values ...any) (string, []any) {
 	return fmt.Sprintf("INSERT INTO %s (%v)", tableName, fileds), []any{}
 }
 
-func _values(values ...any) (string []any) {
+func _values(values ...any) (string, []any) {
 	// VALUES ($v1),($v2),...
+	var bindStr string
+	var sql strings.Builder
+	var vars []interface{}
+	sql.WriteString("VALUES ")
+	for i, value := range values {
+		v := value.([]interface{})
+		if bindStr == "" {
+			bindStr = genBindVars(len(v))
+		}
+		sql.WriteString(fmt.Sprintf("(%v)", bindStr))
+		if i+1 != len(values) {
+			sql.WriteString(", ")
+		}
+		vars = append(vars, v...)
+	}
+	return sql.String(), vars
 }
 
-func _select(values ...any) (string []any) {
-
+func _select(values ...any) (string, []any) {
+	// SELECT $fields FROM $tableName
+	tableName := values[0]
+	fields := strings.Join(values[1].([]string), ",")
+	return fmt.Sprintf("SELECT %v FROM %s", fields, tableName), []any{}
 }
 
-func _limit(values ...any) (string []any) {
-
+func _limit(values ...any) (string, []any) {
+	// LIMIT $num
+	return "LIMIT ?", values
 }
 
-func _where(values ...any) (string []any) {
-
+func _where(values ...any) (string, []any) {
+	// WHERE $desc
+	desc, vals := values[0], values[1:]
+	return fmt.Sprintf("WHERE %s", desc), vals
 }
-func _orderBy(values ...any) (string []any) {
-
+func _orderBy(values ...any) (string, []any) {
+	return fmt.Sprintf("ORDER BY %s", values[0]), []any{}
 }
