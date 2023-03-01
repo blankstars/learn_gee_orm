@@ -24,6 +24,8 @@ func (s *Session) Insert(values ...any) (int64, error) {
 }
 
 func (s *Session) Find(values any) error {
+	s.CallMethod(BeforeQuery, nil)
+
 	destSlice := reflect.Indirect(reflect.ValueOf(values))
 	destType := destSlice.Type().Elem()
 	table := s.Model(reflect.New(destType).Elem().Interface()).RefTable()
@@ -45,6 +47,7 @@ func (s *Session) Find(values any) error {
 			return err
 		}
 		destSlice.Set(reflect.Append(destSlice, dest))
+		s.CallMethod(AfterQuery, dest.Addr().Interface())
 	}
 	return rows.Close()
 }
