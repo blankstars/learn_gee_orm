@@ -2,6 +2,7 @@ package session
 
 import (
 	"database/sql"
+	"github.com/blankstars/gee_orm/clause"
 	"github.com/blankstars/gee_orm/dialect"
 	"github.com/blankstars/gee_orm/log"
 	"github.com/blankstars/gee_orm/schema"
@@ -12,6 +13,7 @@ type Session struct {
 	db       *sql.DB
 	dialect  dialect.Dialect
 	relTable *schema.Schema
+	clause   clause.Clause
 	sql      strings.Builder
 	sqlVals  []any
 }
@@ -25,6 +27,8 @@ func New(db *sql.DB, dialect dialect.Dialect) *Session {
 
 func (s *Session) Clear() {
 	s.sql.Reset()
+	s.sqlVals = nil
+	s.clause = clause.Clause{}
 }
 
 func (s *Session) DB() *sql.DB {
