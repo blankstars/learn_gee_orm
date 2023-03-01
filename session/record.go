@@ -46,8 +46,8 @@ func (s *Session) Find(values any) error {
 		if err := rows.Scan(values...); err != nil {
 			return err
 		}
-		destSlice.Set(reflect.Append(destSlice, dest))
 		s.CallMethod(AfterQuery, dest.Addr().Interface())
+		destSlice.Set(reflect.Append(destSlice, dest))
 	}
 	return rows.Close()
 }
