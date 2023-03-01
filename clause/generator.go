@@ -38,10 +38,10 @@ func _values(values ...any) (string, []any) {
 	// VALUES ($v1),($v2),...
 	var bindStr string
 	var sql strings.Builder
-	var vars []interface{}
+	var vars []any
 	sql.WriteString("VALUES ")
 	for i, value := range values {
-		v := value.([]interface{})
+		v := value.([]any)
 		if bindStr == "" {
 			bindStr = genBindVars(len(v))
 		}

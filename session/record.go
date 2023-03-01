@@ -13,9 +13,9 @@ func (s *Session) Insert(values ...any) (int64, error) {
 		recordValues = append(recordValues, table.RecordValues(value))
 	}
 
-	s.clause.Set(clause.VALUES, recordValues)
+	s.clause.Set(clause.VALUES, recordValues...)
 	sql, vals := s.clause.Build(clause.INSERT, clause.VALUES)
-	result, err := s.Raw(sql, vals).Exec()
+	result, err := s.Raw(sql, vals...).Exec()
 	if err != nil {
 		return 0, err
 	}
