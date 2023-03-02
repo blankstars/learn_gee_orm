@@ -58,7 +58,7 @@ func (s *Session) Raw(sql string, values ...any) *Session {
 func (s *Session) Exec() (result sql.Result, err error) {
 	defer s.Clear()
 	log.Info(s.sql.String(), s.sqlVals)
-	if result, err = s.db.Exec(s.sql.String(), s.sqlVals...); err != nil {
+	if result, err = s.DB().Exec(s.sql.String(), s.sqlVals...); err != nil {
 		log.Error(err)
 	}
 	return
@@ -67,13 +67,13 @@ func (s *Session) Exec() (result sql.Result, err error) {
 func (s *Session) QueryRow() *sql.Row {
 	defer s.Clear()
 	log.Info(s.sql.String(), s.sqlVals)
-	return s.db.QueryRow(s.sql.String(), s.sqlVals...)
+	return s.DB().QueryRow(s.sql.String(), s.sqlVals...)
 }
 
 func (s *Session) QueryRows() (rows *sql.Rows, err error) {
 	defer s.Clear()
 	log.Info(s.sql.String(), s.sqlVals)
-	if rows, err = s.db.Query(s.sql.String(), s.sqlVals...); err != nil {
+	if rows, err = s.DB().Query(s.sql.String(), s.sqlVals...); err != nil {
 		log.Error(err)
 	}
 	return
